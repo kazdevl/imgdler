@@ -36,6 +36,9 @@ func proccess(contentsDir string) error {
 		}
 		fmt.Printf("[%d]: %s\n", i, name)
 	}
+	if len(des) == 0 {
+		fmt.Println("no author names")
+	}
 	fmt.Println("You cna read with `imgdler open [author name]`")
 	return nil
 }
