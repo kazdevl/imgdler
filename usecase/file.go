@@ -11,15 +11,15 @@ import (
 )
 
 type FileUsecase struct {
-	appDir string
+	contentsDir string
 }
 
 func NewFileUsecase(dir string) *FileUsecase {
-	return &FileUsecase{appDir: dir}
+	return &FileUsecase{contentsDir: dir}
 }
 
-func (f *FileUsecase) AppDirName() string {
-	return f.appDir
+func (f *FileUsecase) ContentsDirName() string {
+	return f.contentsDir
 }
 
 func (f *FileUsecase) CreateJpegs(auhtor string, pages entity.Pages) error {
@@ -30,7 +30,7 @@ func (f *FileUsecase) CreateJpegs(auhtor string, pages entity.Pages) error {
 		}
 		defer res.Body.Close()
 
-		f, err := os.Create(fmt.Sprintf("%s/%s/%s_%d.jpg", f.appDir, auhtor, pages.Datetime.Format("20060102030405"), i))
+		f, err := os.Create(fmt.Sprintf("%s/%s/%s_%d.jpg", f.contentsDir, auhtor, pages.Datetime.Format("20060102030405"), i))
 		if err != nil {
 			return err
 		}
