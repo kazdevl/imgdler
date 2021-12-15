@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -21,7 +20,7 @@ type contentOfFlags struct {
 	Max        int
 }
 
-func NewCmd() *cobra.Command {
+func NewCmd(contentDir string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "download tweets images with auhtor, keyword, token, max",
@@ -29,8 +28,10 @@ func NewCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			var c contentOfFlags
 			c.AuthorName, c.Keyword, c.Token, c.Max = getFlagValues(cmd.Flags())
-			err := proccess(c)
-			log.Println(err)
+			err := proccess(c, contentDir)
+			if err != nil {
+				log.Println("found error")
+			}
 		},
 	}
 	cmd.Flags().StringP("author", "a", "", "set author_name")
@@ -51,13 +52,9 @@ func getFlagValues(fSet *pflag.FlagSet) (a, k, t string, m int) {
 	return
 }
 
-func proccess(c contentOfFlags) error {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatal(err)
-	}
+func proccess(c contentOfFlags, contentsDir string) error {
 	tu := usecase.NewTwitterUsecase(c.Token)
-	fu := usecase.NewFileUsecase(filepath.Join(homeDir, "imgdler", "contents"))
+	fu := usecase.NewFileUsecase(contentsDir)
 
 	s := gocron.NewScheduler(time.Local)
 	s.Every(1).Day().At("21:00").Do(func() {
@@ -65,7 +62,7 @@ func proccess(c contentOfFlags) error {
 		if err != nil {
 			log.Println(err)
 		}
-		if err := os.MkdirAll(fmt.Sprintf("%s/%s", fu.AppDirName(), c.AuthorName), 0755); err != nil {
+		if err := os.MkdirAll(fmt.Sprintf("%s/%s", fu.ContentsDirName(), c.AuthorName), 0755); err != nil {
 			log.Fatal(err)
 		}
 		for _, pages := range pagesList {
