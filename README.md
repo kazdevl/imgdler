@@ -6,6 +6,33 @@ imgdler is a command for downloading tweet's images and read them.
 go install github.com/kazdevl/imgdler/cmd/imgdler@latest
 ```
 
+## Sample Usage with image
+### 1. There are some tweets' images you want get
+<img width="576" alt="スクリーンショット 2021-12-15 15 34 15" src="https://user-images.githubusercontent.com/39262724/146135727-11bb3bcd-140f-400c-be29-68480cc4718e.png">
+
+### 2. Use start command for downloading images periodically
+```bash
+$ imgdler start -a _kz_dev -k テスト -t [your twitter access token]
+```
+
+### 3. Check downloaded
+```bash
+$ imgdler list
+
+# output
+The list of author names that you can read
+[0]: _kz_dev
+You cna read with `imgdler open [author name]`
+```
+
+### 3. Read images
+```bash
+$ imgdler open _kz_dev
+```
+result
+<img width="1428" alt="スクリーンショット 2021-12-15 15 33 47" src="https://user-images.githubusercontent.com/39262724/146136336-98917b1d-1480-48ca-8beb-e763b54678c2.png">
+
+
 ## How To Use
 ### Help
 imgdler have three main commands.
@@ -30,13 +57,13 @@ imgdler start -a [author name] -k [keyword] -t [token] -m [max]
 list is a command for getting a list of authors whose names are available for reading
 ```bash
 $ imgdler list
-# result if you have _kz_dev's images
+# output if you have _kz_dev's images
 The list of author names that you can read
 [0]: _kz_dev
 You cna read with `imgdler open [author name]`
 
 $ imgdler list
-# result if you don't have any auhtor's images
+# output if you don't have any auhtor's images
 The list of author names that you can read
 no author names
 You cna read with `imgdler open [author name]`
@@ -49,4 +76,3 @@ $ imgdler open [author name]
 # if you have _kz_dev's images
 $ imgdler open _kz_dev
 ```
-**result of open**
