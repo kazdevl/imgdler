@@ -1,6 +1,7 @@
 package list
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -27,12 +28,14 @@ func proccess(contentsDir string) error {
 	if err != nil {
 		return err
 	}
-	for _, de := range des {
+	fmt.Println("The list of author names that you can read")
+	for i, de := range des {
 		name := de.Name()
 		if name[0] == '.' {
 			continue
 		}
-		log.Println(name)
+		fmt.Printf("[%d]: %s\n", i, name)
 	}
+	fmt.Println("You cna read with `imgdler open [author name]`")
 	return nil
 }
