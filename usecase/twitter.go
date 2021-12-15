@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -31,9 +30,6 @@ func (t *TwitterUsecase) FetchContent(author, keyword string, max int) ([]entity
 	})
 	if err != nil {
 		return []entity.Pages{}, err
-	}
-	if len(res.Tweets) == 0 {
-		return []entity.Pages{}, errors.New("no tweets")
 	}
 	pagesList := make([]entity.Pages, len(res.Tweets))
 	for index, tweet := range res.Tweets {
