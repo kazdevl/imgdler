@@ -20,6 +20,28 @@ type contentOfFlags struct {
 	Max        int
 }
 
+type creator struct {
+	fu *usecase.FileUsecase
+	tu *usecase.TwitterUsecase
+	c  contentOfFlags
+}
+
+func (cr *creator) fetchAndCreate() error {
+	pagesList, err := cr.tu.FetchContent(cr.c.AuthorName, cr.c.Keyword, cr.c.Max)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(fmt.Sprintf("%s/%s", cr.fu.ContentsDirName(), cr.c.AuthorName), 0755); err != nil {
+		return err
+	}
+	for _, pages := range pagesList {
+		if err := cr.fu.CreateJpegs(cr.c.AuthorName, pages); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func NewCmd(contentDir string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
@@ -55,22 +77,14 @@ func getFlagValues(fSet *pflag.FlagSet) (a, k, t string, m int) {
 func proccess(c contentOfFlags, contentsDir string) error {
 	tu := usecase.NewTwitterUsecase(c.Token)
 	fu := usecase.NewFileUsecase(contentsDir)
+	cr := &creator{fu: fu, tu: tu, c: c}
+
+	if err := cr.fetchAndCreate(); err != nil {
+		return err
+	}
 
 	s := gocron.NewScheduler(time.Local)
-	s.Every(1).Day().At("21:00").Do(func() {
-		pagesList, err := tu.FetchContent(c.AuthorName, c.Keyword, c.Max)
-		if err != nil {
-			log.Println(err)
-		}
-		if err := os.MkdirAll(fmt.Sprintf("%s/%s", fu.ContentsDirName(), c.AuthorName), 0755); err != nil {
-			log.Fatal(err)
-		}
-		for _, pages := range pagesList {
-			if err := fu.CreateJpegs(c.AuthorName, pages); err != nil {
-				log.Fatal(err)
-			}
-		}
-	})
+	s.Every(1).Day().At("21:00").Do(cr.fetchAndCreate)
 	s.StartAsync()
 
 	quit := make(chan os.Signal, 1)
