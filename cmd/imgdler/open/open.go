@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"text/template"
 
 	"github.com/pkg/browser"
@@ -36,6 +37,14 @@ func proccess(author, contentsDir string) error {
 	}
 	images := make([]string, len(des))
 	for i, de := range des {
+		filename := de.Name()
+		fileInfo := strings.Split(filename, ".")
+		if len(fileInfo) <= 1 {
+			continue
+		}
+		if fileInfo[1] != "jpg" {
+			continue
+		}
 		images[i] = fmt.Sprintf("%s/%s", contentDir, de.Name())
 	}
 	sort.Strings(images)
@@ -73,7 +82,7 @@ const tpl = `
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <title>Twimec</title>
+    <title>imgdler</title>
 </head>
 
 <body class="bg-secondary">
