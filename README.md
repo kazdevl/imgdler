@@ -12,7 +12,7 @@ go install github.com/kazdevl/imgdler/cmd/imgdler@latest
 
 ### 2. Use start command for downloading images periodically
 ```bash
-$ imgdler start -a _kz_dev -k テスト -t [your twitter access token]
+$ imgdler start -a _kz_dev -k テスト -t [your OAuth 2.0. Bearer tokens]
 ```
 
 ### 3. Check downloaded
@@ -46,7 +46,7 @@ above command downloads specified tweet's images every night at 9:00 p.m.
 - "author name" specifies author name of tweets that user of imgdler want.
     - this is twitter user name withour "@".
 - "keyword" specifies keywords that the tweet should contain.
-- "token" specifies twitter access token.
+- "token" specifies your OAuth 2.0. Bearer tokens.
 - "max" specifies the number of tweets to retrieve.
 
 ```bash
